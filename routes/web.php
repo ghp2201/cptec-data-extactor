@@ -19,5 +19,5 @@ $router->get('/', function () use ($router) {
 
 
 $router->group(['prefix' => 'api'], function () use ($router) {
-    $router->get('/extract', ['uses' => 'Extractor@index']);
+    $router->get('/extract/{kind}', ['uses' => 'Core@init']);
 });
