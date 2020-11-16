@@ -4,7 +4,7 @@ namespace App\Samplers;
 
 class Sampler
 {
-    private $image, $x, $y;
+    private $files, $image, $x, $y;
 
     private $colorTemperatureRelation = [
         'rgb(130, 0, 220)' => 5,
@@ -29,28 +29,42 @@ class Sampler
         'rgb(40, 0, 0)' => 37,
     ];
 
-    public function sample($files)
+    public function init($files)
     {
-        $values = [];
+        $this->files = $files;
 
-        foreach ($files as $file) {
+        return $this->sample();
+    }
+
+    private function sample()
+    {
+        $samples = [];
+
+        foreach ($this->files as $file) {
             $this->image = imagecreatefromgif($file);
             $this->validateImage();
 
             $value = $this->getValueFromColor();
 
-            array_push($values, $value);
+            $month = substr($file, 13, 3);
+
+            array_push($samples, [$month, $value]);
         }
 
-        return $values;
+        return $samples;
     }
 
-    private function getValueFromColor()
+    private function getColor()
     {
         $pixelColor = imagecolorat($this->image, $this->x, $this->y);
         $colors = imagecolorsforindex($this->image, $pixelColor);
 
-        $color = "rgb({$colors['red']}, {$colors['green']}, {$colors['blue']})";
+        return "rgb({$colors['red']}, {$colors['green']}, {$colors['blue']})";
+    }
+
+    private function getValueFromColor()
+    {
+        $color = $this->validateColor($this->getColor());
 
         return $this->colorTemperatureRelation[$color];
     }
@@ -74,5 +88,16 @@ class Sampler
             $this->x = 316;
             $this->y = 435;
         }
+    }
+
+    private function validateColor($color)
+    {
+        if (! array_key_exists($color, $this->colorTemperatureRelation)) {
+            $this->x += 1;
+
+            return $this->getColor();
+        }
+
+        return $color;
     }
 }

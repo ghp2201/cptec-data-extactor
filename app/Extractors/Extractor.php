@@ -4,7 +4,7 @@ namespace App\Extractors;
 
 class Extractor
 {
-    private $file, $firstYear, $lastYear, $kind;
+    private $file, $year, $kind;
 
     private $months = [
         '01' => 'jan',
@@ -21,46 +21,46 @@ class Extractor
         '12' => 'dez',
     ];
 
-    public function __construct()
+    public function init($kind, $year)
     {
-        $this->firstYear = env('INITIAL_EXTRACTION_YEAR');
-        $this->lastYear = env('FINAL_EXTRACTION_YEAR');
+        $this->kind = $kind;
+        $this->year = $year;
+
+        return $this->extract();
     }
 
-    public function extract($kind)
+    private function extract()
     {
-        $extractedFiles = [];
+        $files = [];
 
-        for ($i = $this->firstYear; $i <= $this->lastYear; $i++) {
-            foreach ($this->months as $monthNumber => $monthLabel) {
-                $this->download($monthLabel, $monthNumber, $kind, $i);
+        foreach ($this->months as $monthNumber => $monthLabel) {
+            $this->download($monthLabel, $monthNumber);
 
-                array_push($extractedFiles, $this->file);
-            }
+            array_push($files, $this->file);
         }
 
-        return $extractedFiles;
+        return $files;
     }
 
-    private function download($monthLabel, $monthNumber , $kind, $year)
+    private function download($monthLabel, $monthNumber)
     {
-        $this->file = "uploads/{$year}-{$monthLabel}-{$kind}.gif";
+        $this->file = "uploads/{$this->year}-{$monthLabel}-{$this->kind}.gif";
 
         $this->validateFile();
 
-        $url = $this->getUrl($monthLabel, $monthNumber , $kind, $year);
+        $url = $this->getUrl($monthLabel, $monthNumber);
 
         file_put_contents($this->file, file_get_contents($url));
 
         return $this->file;
     }
 
-    private function getUrl($monthLabel, $monthNumber , $kind, $year)
+    private function getUrl($monthLabel, $monthNumber)
     {
-        $shortYear = substr($year, -2);
+        $shortYear = substr($this->year, -2);
 
         $defaultUrl = "http://img0.cptec.inpe.br/~rclima/historicos/mensal/brasil/";
-        $file = "{$monthLabel}/{$kind}{$monthNumber}{$shortYear}.gif";
+        $file = "{$monthLabel}/{$this->kind}{$monthNumber}{$shortYear}.gif";
 
         return $defaultUrl . $file;
     }
