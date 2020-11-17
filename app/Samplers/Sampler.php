@@ -59,12 +59,14 @@ class Sampler
         $pixelColor = imagecolorat($this->image, $this->x, $this->y);
         $colors = imagecolorsforindex($this->image, $pixelColor);
 
-        return "rgb({$colors['red']}, {$colors['green']}, {$colors['blue']})";
+        $color = "rgb({$colors['red']}, {$colors['green']}, {$colors['blue']})";
+
+        return $this->validateColor($color);
     }
 
     private function getValueFromColor()
     {
-        $color = $this->validateColor($this->getColor());
+        $color = $this->getColor();
 
         return $this->colorTemperatureRelation[$color];
     }
