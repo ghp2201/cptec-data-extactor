@@ -19,5 +19,6 @@ $router->get('/', function () use ($router) {
 
 
 $router->group(['prefix' => 'api'], function () use ($router) {
-    $router->get('/extract/{kind}', ['uses' => 'Core@init']);
+    $router->get('/extract/{kind}', ['uses' => 'Core@extract']);
+    $router->get('/export/{kind}', ['uses' => 'Core@export']);
 });
