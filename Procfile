@@ -1,1 +1,1 @@
-web: heroku addons:create cleardb:ignite --app=cptec-data-extractor
+web: vendor/bin/heroku-php-apache2 public
