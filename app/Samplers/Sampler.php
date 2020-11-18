@@ -29,6 +29,11 @@ class Sampler
         'rgb(40, 0, 0)' => 37,
     ];
 
+    public function __construct()
+    {
+        $this->path = env('UPLOADS_PATH');
+    }
+
     public function init($files)
     {
         $this->files = $files;
@@ -41,12 +46,12 @@ class Sampler
         $samples = [];
 
         foreach ($this->files as $file) {
-            $this->image = imagecreatefromgif($file);
+            $this->image = imagecreatefromgif($this->path . $file);
             $this->validateImage();
 
             $value = $this->getValueFromColor();
 
-            $month = substr($file, 13, 3);
+            $month = substr($file, 5, 3);
 
             array_push($samples, [$month, $value]);
         }

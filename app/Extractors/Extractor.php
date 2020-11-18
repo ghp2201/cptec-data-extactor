@@ -21,6 +21,11 @@ class Extractor
         '12' => 'dez',
     ];
 
+    public function __construct()
+    {
+        $this->path = env('UPLOADS_PATH');
+    }
+
     public function init($kind, $year)
     {
         $this->kind = $kind;
@@ -44,13 +49,12 @@ class Extractor
 
     private function download($monthLabel, $monthNumber)
     {
-        $this->file = "uploads/{$this->year}-{$monthLabel}-{$this->kind}.gif";
-
+        $this->file = "{$this->year}-{$monthLabel}-{$this->kind}.gif";
         $this->validateFile();
 
         $url = $this->getUrl($monthLabel, $monthNumber);
 
-        file_put_contents($this->file, file_get_contents($url));
+        file_put_contents($this->path . $this->file, file_get_contents($url));
 
         return $this->file;
     }
@@ -67,8 +71,8 @@ class Extractor
 
     private function validateFile()
     {
-        if (file_exists($this->file)) {
-            echo "{$this->file} Already Exists, Skiping ... \n";
+        if (file_exists($this->path . $this->file)) {
+            echo "{$this->path}{$this->file} Already Exists, Skiping ... \n";
 
             return $this->file;
         }
