@@ -9,22 +9,19 @@ use App\Exporters\Exporter;
 
 class Core extends Controller
 {
-    private $firstYear, $lastYear, $extractor, $sampler, $loader, $exporter;
+    private $extractor, $sampler, $loader, $exporter;
 
     public function __construct()
     {
-        $this->firstYear = env('INITIAL_EXTRACTION_YEAR');
-        $this->lastYear = env('FINAL_EXTRACTION_YEAR');
-
         $this->extractor = new Extractor;
         $this->sampler = new Sampler;
         $this->loader = new Loader;
         $this->exporter = new Exporter;
     }
 
-    public function extract($kind)
+    public function extract($kind, $initialExtractionYear, $finalExtractionYear)
     {
-        for ($i = $this->firstYear; $i <= $this->lastYear; $i++) {
+        for ($i = $initialExtractionYear; $i <= $finalExtractionYear; $i++) {
             $files = $this->extractor->init($kind, $i);
             $samples = $this->sampler->init($files);
 
@@ -37,9 +34,8 @@ class Core extends Controller
         $json = $this->exporter->init($kind);
 
         if (empty(json_decode($json, true))) {
-            $this->extract($kind);
-
-            return $this->export($kind);
+            echo "Empty Database, Please Perform an Extraction";
+            return;
         }
 
         return $json;
