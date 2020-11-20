@@ -7,17 +7,15 @@ use App\Models\MaxTemperature;
 
 class Loader
 {
-    private $model, $samples, $kind, $year;
+    private $model, $samples, $year;
 
     private $data = [];
 
-    public function init($samples, $kind, $year)
+    public function init($samples, $model, $year)
     {
         $this->samples = $samples;
-        $this->kind = $kind;
+        $this->model = $model;
         $this->year = $year;
-
-        $this->validateKind();
 
         return $this->load();
     }
@@ -32,11 +30,7 @@ class Loader
             $this->data[$month] = $value;
         }
 
-        if (! $this->entryExists()) {
-            return $this->model::create($this->getData());
-        }
-
-        return "{$this->data['year']} Entry Already Exists, Skipping ... \n";
+        return $this->model::create($this->getData());
     }
 
     private function getData()
@@ -56,23 +50,5 @@ class Loader
             'november' => $this->data['nov'],
             'december' => $this->data['dez'],
         ];
-    }
-
-    private function validateKind()
-    {
-        if ($this->kind == 'tempmin') {
-            $this->model = new MinTemperature;
-        }
-
-        if ($this->kind == 'tempmax') {
-            $this->model = new MaxTemperature;
-        }
-    }
-
-    private function entryExists()
-    {
-        return $this->model::select("*")
-            ->where('year', $this->data['year'])
-            ->exists();
     }
 }

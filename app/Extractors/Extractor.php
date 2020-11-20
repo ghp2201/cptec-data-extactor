@@ -4,7 +4,7 @@ namespace App\Extractors;
 
 class Extractor
 {
-    private $file, $year, $kind;
+    private $path, $filename, $year, $kind;
 
     private $months = [
         '01' => 'jan',
@@ -41,7 +41,7 @@ class Extractor
         foreach ($this->months as $monthNumber => $monthLabel) {
             $this->download($monthLabel, $monthNumber);
 
-            array_push($files, $this->file);
+            array_push($files, $this->filename);
         }
 
         return $files;
@@ -49,14 +49,13 @@ class Extractor
 
     private function download($monthLabel, $monthNumber)
     {
-        $this->file = "{$this->year}-{$monthLabel}-{$this->kind}.gif";
-        $this->validateFile();
+        $this->filename = "{$this->year}-{$monthLabel}-{$this->kind}.gif";
 
         $url = $this->getUrl($monthLabel, $monthNumber);
 
-        file_put_contents($this->path . $this->file, file_get_contents($url));
+        file_put_contents($this->path . $this->filename, file_get_contents($url));
 
-        return $this->file;
+        return $this->filename;
     }
 
     private function getUrl($monthLabel, $monthNumber)
@@ -64,17 +63,8 @@ class Extractor
         $shortYear = substr($this->year, -2);
 
         $defaultUrl = "http://img0.cptec.inpe.br/~rclima/historicos/mensal/brasil/";
-        $file = "{$monthLabel}/{$this->kind}{$monthNumber}{$shortYear}.gif";
+        $filename = "{$monthLabel}/{$this->kind}{$monthNumber}{$shortYear}.gif";
 
-        return $defaultUrl . $file;
-    }
-
-    private function validateFile()
-    {
-        if (file_exists($this->path . $this->file)) {
-            echo "{$this->path}{$this->file} Already Exists, Skiping ... \n";
-
-            return $this->file;
-        }
+        return $defaultUrl . $filename;
     }
 }
