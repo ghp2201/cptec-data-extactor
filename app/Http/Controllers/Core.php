@@ -2,31 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Extractors\Extractor;
-use App\Samplers\Sampler;
-use App\Loaders\Loader;
 use App\Exporters\Exporter;
+use App\Jobs\DatabaseBuilder;
 
 class Core extends Controller
 {
-    private $extractor, $sampler, $loader, $exporter;
+    private $exporter;
 
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
     public function __construct()
     {
-        $this->extractor = new Extractor;
-        $this->sampler = new Sampler;
-        $this->loader = new Loader;
         $this->exporter = new Exporter;
     }
 
-    public function extract($kind, $initialExtractionYear, $finalExtractionYear)
+    public function extract($kind, $start, $end)
     {
-        for ($i = $initialExtractionYear; $i <= $finalExtractionYear; $i++) {
-            $files = $this->extractor->init($kind, $i);
-            $samples = $this->sampler->init($files);
+        echo "Extracting Data And Building Database ... \n";
 
-            $this->loader->init($samples, $kind, $i);
-        }
+        $job = new DatabaseBuilder($kind, $start, $end);
+
+        dispatch($job);
+
+        return;
     }
 
     public function export($kind)
@@ -34,7 +35,7 @@ class Core extends Controller
         $json = $this->exporter->init($kind);
 
         if (empty(json_decode($json, true))) {
-            echo "Empty Database, Please Perform an Extraction";
+            echo "Empty Database, Please Perform an Extraction \n";
             return;
         }
 
