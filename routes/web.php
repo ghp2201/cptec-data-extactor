@@ -18,11 +18,11 @@ $router->get('/', function () use ($router) {
 });
 
 
-$router->group(['prefix' => 'api'], function () use ($router) {
-    $router->get('/extract/{kind}/{initialExtractionYear}/{finalExtractionYear}', [
+$router->group(['prefix' => 'api/'], function () use ($router) {
+    $router->get('extract/kind={kind}&start={start}&end={end}', [
         'uses' => 'Core@extract'
     ]);
-    $router->get('/export/{kind}', [
+    $router->get('export/kind={kind}', [
         'uses' => 'Core@export'
     ]);
 });
