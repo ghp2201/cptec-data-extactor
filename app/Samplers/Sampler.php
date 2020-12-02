@@ -49,11 +49,12 @@ class Sampler
             $this->image = imagecreatefromgif($this->path . $file);
             $this->validateImage();
 
+            $this->year = substr($file, 1, 4);
+            $this->month = substr($file, 5, 3);
+
             $value = $this->getValueFromColor();
 
-            $month = substr($file, 5, 3);
-
-            array_push($samples, [$month, $value]);
+            array_push($samples, [$this->month, $value]);
         }
 
         return $samples;
@@ -71,9 +72,13 @@ class Sampler
 
     private function getValueFromColor()
     {
+        if ($this->checkForEmptyFile()) {
+            return null;
+        };
+
         $color = $this->getColor();
 
-        return $this->colorTemperatureRelation[$color];
+        return $this->colorTemperatureRelation[$color];;
     }
 
     private function validateImage()
@@ -106,5 +111,14 @@ class Sampler
         }
 
         return $color;
+    }
+
+    private function checkForEmptyFile()
+    {
+        if ($this->year == '2019' && $this->month == 'jan') {
+            return true;
+        }
+
+        return false;
     }
 }
