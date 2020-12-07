@@ -34,9 +34,10 @@ class Sampler
         $this->path = env('UPLOADS_PATH');
     }
 
-    public function init($files)
+    public function init($files, $year)
     {
         $this->files = $files;
+        $this->year = $year;
 
         return $this->sample();
     }
@@ -47,10 +48,9 @@ class Sampler
 
         foreach ($this->files as $file) {
             $this->image = imagecreatefromgif($this->path . $file);
-            $this->validateImage();
-
-            $this->year = substr($file, 1, 4);
             $this->month = substr($file, 5, 3);
+
+            $this->setCoordinatesFromImageDimensions();
 
             $value = $this->getValueFromColor();
 
@@ -81,7 +81,7 @@ class Sampler
         return $this->colorTemperatureRelation[$color];;
     }
 
-    private function validateImage()
+    private function setCoordinatesFromImageDimensions()
     {
         $width = imagesx($this->image);
         $height = imagesy($this->image);

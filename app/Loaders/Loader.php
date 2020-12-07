@@ -26,7 +26,6 @@ class Loader
             $month = $sample[0];
             $value = $sample[1];
 
-            $this->data['year'] = $this->year;
             $this->data[$month] = $value;
         }
 
@@ -36,7 +35,7 @@ class Loader
     private function getData()
     {
         return [
-            'year' => $this->data['year'],
+            'year' => $this->year,
             'january' => $this->data['jan'],
             'february' => $this->data['fev'],
             'march' => $this->data['mar'],

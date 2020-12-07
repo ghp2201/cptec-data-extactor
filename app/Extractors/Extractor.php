@@ -53,18 +53,15 @@ class Extractor
 
         $url = $this->getUrl($monthLabel, $monthNumber);
 
-        file_put_contents($this->path . $this->filename, file_get_contents($url));
-
-        return $this->filename;
+        return file_put_contents($this->path . $this->filename, file_get_contents($url));
     }
 
     private function getUrl($monthLabel, $monthNumber)
     {
         $shortYear = substr($this->year, -2);
 
-        $defaultUrl = "http://img0.cptec.inpe.br/~rclima/historicos/mensal/brasil/";
-        $filename = "{$monthLabel}/{$this->kind}{$monthNumber}{$shortYear}.gif";
+        $image = "{$monthLabel}/{$this->kind}{$monthNumber}{$shortYear}.gif";
 
-        return $defaultUrl . $filename;
+        return "http://img0.cptec.inpe.br/~rclima/historicos/mensal/brasil/{$image}";
     }
 }

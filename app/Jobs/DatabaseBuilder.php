@@ -42,7 +42,7 @@ class DatabaseBuilder extends Job
         for ($year = $this->start; $year <= $this->end; $year++) {
             if ($this->entryDoesntExist($year)) {
                 $files = $this->extractor->init($this->kind, $year);
-                $samples = $this->sampler->init($files);
+                $samples = $this->sampler->init($files, $year);
 
                 $this->loader->init($samples, $this->model, $year);
             }
