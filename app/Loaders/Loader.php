@@ -2,9 +2,6 @@
 
 namespace App\Loaders;
 
-use App\Models\MinTemperature;
-use App\Models\MaxTemperature;
-
 class Loader
 {
     private $model, $samples, $year;
