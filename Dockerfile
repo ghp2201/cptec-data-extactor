@@ -1,4 +1,6 @@
-FROM php:7.4-apache
+FROM php:7.4-fpm
+
+WORKDIR /var/www/
 
 RUN apt-get update \
     && apt-get install -y libzip-dev \
@@ -10,4 +12,4 @@ RUN apt-get update \
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN a2enmod rewrite
+EXPOSE 9000
