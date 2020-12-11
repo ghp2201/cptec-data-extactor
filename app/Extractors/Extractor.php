@@ -4,64 +4,29 @@ namespace App\Extractors;
 
 class Extractor
 {
-    private $path, $filename, $year, $kind;
-
-    private $months = [
-        '01' => 'jan',
-        '02' => 'fev',
-        '03' => 'mar',
-        '04' => 'abr',
-        '05' => 'mai',
-        '06' => 'jun',
-        '07' => 'jul',
-        '08' => 'ago',
-        '09' => 'set',
-        '10' => 'out',
-        '11' => 'nov',
-        '12' => 'dez',
-    ];
+    private $path;
 
     public function __construct()
     {
         $this->path = env('UPLOADS_PATH');
     }
 
-    public function init($kind, $year)
+    public function extract($kind, $year, $monthNumber, $monthLabel)
     {
-        $this->kind = $kind;
-        $this->year = $year;
+        $shortYear = substr($year, -2);
 
-        return $this->extract();
+        $localFile = "{$year}-{$monthLabel}-{$kind}.gif";
+        $cptecFile = "{$monthLabel}/{$kind}{$monthNumber}{$shortYear}.gif";
+
+        $this->downloadFile($localFile, $cptecFile);
+
+        return $localFile;
     }
 
-    private function extract()
+    private function downloadFile($localFile, $cptecFile)
     {
-        $files = [];
+        $url = "http://img0.cptec.inpe.br/~rclima/historicos/mensal/brasil/{$cptecFile}";
 
-        foreach ($this->months as $monthNumber => $monthLabel) {
-            $this->download($monthLabel, $monthNumber);
-
-            array_push($files, $this->filename);
-        }
-
-        return $files;
-    }
-
-    private function download($monthLabel, $monthNumber)
-    {
-        $this->filename = "{$this->year}-{$monthLabel}-{$this->kind}.gif";
-
-        $url = $this->getUrl($monthLabel, $monthNumber);
-
-        return file_put_contents($this->path . $this->filename, file_get_contents($url));
-    }
-
-    private function getUrl($monthLabel, $monthNumber)
-    {
-        $shortYear = substr($this->year, -2);
-
-        $image = "{$monthLabel}/{$this->kind}{$monthNumber}{$shortYear}.gif";
-
-        return "http://img0.cptec.inpe.br/~rclima/historicos/mensal/brasil/{$image}";
+        return file_put_contents($this->path . $localFile, file_get_contents($url));
     }
 }

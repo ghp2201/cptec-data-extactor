@@ -4,7 +4,7 @@ namespace App\Samplers;
 
 class Sampler
 {
-    private $files, $image, $x, $y;
+    private $image, $x, $y;
 
     private $colorTemperatureRelation = [
         'rgb(130, 0, 220)' => 5,
@@ -34,27 +34,18 @@ class Sampler
         $this->path = env('UPLOADS_PATH');
     }
 
-    public function init($files, $year)
+    public function sample($files, $year)
     {
-        $this->files = $files;
         $this->year = $year;
-
-        return $this->sample();
-    }
-
-    private function sample()
-    {
         $samples = [];
 
-        foreach ($this->files as $file) {
-            $this->image = imagecreatefromgif($this->path . $file);
-            $this->month = substr($file, 5, 3);
+        foreach ($files as $month => $filename) {
+            $this->image = imagecreatefromgif($this->path . $filename);
+            $this->month = $month;
 
             $this->setCoordinatesFromImageDimensions();
 
-            $value = $this->getValueFromColor();
-
-            array_push($samples, [$this->month, $value]);
+            $samples[$month] = $this->getValueFromColor();
         }
 
         return $samples;
@@ -78,7 +69,7 @@ class Sampler
 
         $color = $this->getColor();
 
-        return $this->colorTemperatureRelation[$color];;
+        return $this->colorTemperatureRelation[$color];
     }
 
     private function setCoordinatesFromImageDimensions()
@@ -89,14 +80,10 @@ class Sampler
         if ($width == 430 && $height == 543) {
             $this->x = 262;
             $this->y = 374;
-        }
-
-        if ($width == 430 && $height == 545) {
+        } else if ($width == 430 && $height == 545) {
             $this->x = 262;
             $this->y = 376;
-        }
-
-        if ($width == 500 && $height == 647) {
+        } else if ($width == 500 && $height == 647) {
             $this->x = 316;
             $this->y = 435;
         }

@@ -10,9 +10,22 @@ use App\Models\MaxTemperature;
 
 class DatabaseBuilder extends Job
 {
-    private $kind, $start, $end, $model;
+    private $kind, $start, $end, $model, $extractor, $sampler, $loader;
 
-    private $extractor, $sampler, $loader;
+    private $months = [
+        '01' => 'jan',
+        '02' => 'fev',
+        '03' => 'mar',
+        '04' => 'abr',
+        '05' => 'mai',
+        '06' => 'jun',
+        '07' => 'jul',
+        '08' => 'ago',
+        '09' => 'set',
+        '10' => 'out',
+        '11' => 'nov',
+        '12' => 'dez',
+    ];
 
     /**
      * Create a new job instance.
@@ -37,25 +50,37 @@ class DatabaseBuilder extends Job
      */
     public function handle()
     {
-        $this->validateKind();
+        $this->setModelFromKind($this->kind);
 
         for ($year = $this->start; $year <= $this->end; $year++) {
-            if ($this->entryDoesntExist($year)) {
-                $files = $this->extractor->init($this->kind, $year);
-                $samples = $this->sampler->init($files, $year);
+            $files = [];
 
-                $this->loader->init($samples, $this->model, $year);
+            if ($this->entryDoesntExist($year)) {
+                foreach ($this->months as $monthNumber => $monthLabel) {
+                    try {
+                        $files[$monthLabel] = $this->extractor->extract(
+                            $this->kind,
+                            $year,
+                            $monthNumber,
+                            $monthLabel
+                        );
+                    } catch (NotFoundHttpException $e) {
+                        $files[$monthLabel] = null;
+                    }
+                }
+
+                $samples = $this->sampler->sample($files, $year);
+
+                $this->loader->load($samples, $this->model, $year);
             }
         }
     }
 
-    private function validateKind()
+    private function setModelFromKind($kind)
     {
-        if ($this->kind == 'tempmin') {
+        if ($kind == 'tempmin') {
             $this->model = new MinTemperature;
-        }
-
-        if ($this->kind == 'tempmax') {
+        } else if ($kind == 'tempmax') {
             $this->model = new MaxTemperature;
         }
     }

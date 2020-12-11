@@ -9,6 +9,11 @@ class Core extends Controller
 {
     private $exporter;
 
+    private $kinds = [
+        'tempmin',
+        'tempmax',
+    ];
+
     /**
      * Create a new controller instance.
      *
@@ -19,23 +24,24 @@ class Core extends Controller
         $this->exporter = new Exporter;
     }
 
-    public function extract($kind, $start, $end)
+    public function extract($start, $end)
     {
         echo "Extracting Data And Building Database ... \n";
 
-        $job = new DatabaseBuilder($kind, $start, $end);
-
-        dispatch($job);
+        foreach ($this->kinds as $kind) {
+            dispatch(new DatabaseBuilder($kind, $start, $end));
+        }
 
         return;
     }
 
     public function export($kind)
     {
-        $json = $this->exporter->init($kind);
+        $json = $this->exporter->export($kind);
 
         if (empty(json_decode($json, true))) {
             echo "Empty Database, Please Perform an Extraction \n";
+
             return;
         }
 

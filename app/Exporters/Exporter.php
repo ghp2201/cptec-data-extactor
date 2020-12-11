@@ -7,29 +7,20 @@ use App\Models\MaxTemperature;
 
 class Exporter
 {
-    private $kind, $model;
+    private $model;
 
-    public function init($kind)
+    public function export($kind)
     {
-        $this->kind = $kind;
+        $this->setModelFromKind($kind);
 
-        $this->validateKind();
-
-        return $this->export();
-    }
-
-    private function export()
-    {
         return $this->model::all()->toJson();
     }
 
-    private function validateKind()
+    private function setModelFromKind($kind)
     {
-        if ($this->kind === 'tempmin') {
+        if ($kind == 'tempmin') {
             $this->model = new MinTemperature;
-        }
-
-        if ($this->kind === 'tempmax') {
+        } else if ($kind == 'tempmax') {
             $this->model = new MaxTemperature;
         }
     }

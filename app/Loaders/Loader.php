@@ -4,47 +4,22 @@ namespace App\Loaders;
 
 class Loader
 {
-    private $model, $samples, $year;
-
-    private $data = [];
-
-    public function init($samples, $model, $year)
+    public function load($samples, $model, $year)
     {
-        $this->samples = $samples;
-        $this->model = $model;
-        $this->year = $year;
-
-        return $this->load();
-    }
-
-    public function load()
-    {
-        foreach ($this->samples as $sample) {
-            $month = $sample[0];
-            $value = $sample[1];
-
-            $this->data[$month] = $value;
-        }
-
-        return $this->model::create($this->getData());
-    }
-
-    private function getData()
-    {
-        return [
-            'year' => $this->year,
-            'january' => $this->data['jan'],
-            'february' => $this->data['fev'],
-            'march' => $this->data['mar'],
-            'april' => $this->data['abr'],
-            'may' => $this->data['mai'],
-            'june' => $this->data['jun'],
-            'july' => $this->data['jul'],
-            'august' => $this->data['ago'],
-            'september' => $this->data['set'],
-            'october' => $this->data['out'],
-            'november' => $this->data['nov'],
-            'december' => $this->data['dez'],
-        ];
+        return $model::create([
+            'year' => $year,
+            'january' => $samples['jan'],
+            'february' => $samples['fev'],
+            'march' => $samples['mar'],
+            'april' => $samples['abr'],
+            'may' => $samples['mai'],
+            'june' => $samples['jun'],
+            'july' => $samples['jul'],
+            'august' => $samples['ago'],
+            'september' => $samples['set'],
+            'october' => $samples['out'],
+            'november' => $samples['nov'],
+            'december' => $samples['dez'],
+        ]);
     }
 }
