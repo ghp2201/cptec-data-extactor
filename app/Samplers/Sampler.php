@@ -29,18 +29,15 @@ class Sampler
         'rgb(40, 0, 0)' => 37,
     ];
 
-    public function __construct()
-    {
-        $this->path = env('UPLOADS_PATH');
-    }
-
     public function sample($files, $year)
     {
         $this->year = $year;
         $samples = [];
 
         foreach ($files as $month => $filename) {
-            $this->image = imagecreatefromgif($this->path . $filename);
+            $filePath = storage_path("app/{$year}/{$filename}");
+
+            $this->image = imagecreatefromgif($filePath);
             $this->month = $month;
 
             $this->setCoordinatesFromImageDimensions();
