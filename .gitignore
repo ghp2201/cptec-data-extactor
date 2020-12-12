@@ -24,4 +24,3 @@ Homestead.json
 
 # Custom ignores
 db/
-public/uploads/*.gif
