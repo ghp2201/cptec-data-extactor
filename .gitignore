@@ -24,3 +24,5 @@ Homestead.json
 
 # Custom ignores
 db/
+.vscode/
+.devcontainer/
