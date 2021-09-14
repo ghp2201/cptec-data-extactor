@@ -28,9 +28,7 @@ class Core extends Controller
     {
         echo "Extracting Data And Building Database ... \n";
 
-        foreach ($this->kinds as $kind) {
-            dispatch(new DatabaseBuilder($kind, $start, $end));
-        }
+        dispatch(new DatabaseBuilder($start, $end));
 
         return;
     }

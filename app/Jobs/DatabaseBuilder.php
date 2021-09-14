@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Extractors\Extractor;
 use App\Samplers\Sampler;
-use App\Loaders\Loader;
 use App\Models\MinTemperature;
 use App\Models\MaxTemperature;
 
@@ -27,68 +26,85 @@ class DatabaseBuilder extends Job
         '12' => 'dez',
     ];
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct($kind, $start, $end)
+    public function __construct(int $start, int $end)
     {
-        $this->kind = $kind;
         $this->start = $start;
         $this->end = $end;
 
         $this->extractor = new Extractor;
         $this->sampler = new Sampler;
-        $this->loader = new Loader;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
+    public function handle(): void
     {
-        $this->setModelFromKind($this->kind);
+        $kinds = [
+            'tempmin',
+            'tempmax',
+        ];
+
+        foreach ($kinds as $kind) {
+            $this->build($kind);
+        }
+    }
+
+    private function build(string $kind): void
+    {
+        $model = $this->setModelFromKind($kind);
 
         for ($year = $this->start; $year <= $this->end; $year++) {
-            $files = [];
+            $files = $this->extractDataFromCptec($year, $kind);
 
-            if ($this->entryDoesntExist($year)) {
-                foreach ($this->months as $monthNumber => $monthLabel) {
-                    try {
-                        $files[$monthLabel] = $this->extractor->extract(
-                            $this->kind,
-                            $year,
-                            $monthNumber,
-                            $monthLabel
-                        );
-                    } catch (NotFoundHttpException $e) {
-                        $files[$monthLabel] = null;
-                    }
-                }
+            $samples = $this->sampler->sample($files, $year);
 
-                $samples = $this->sampler->sample($files, $year);
+            $model::create([
+                'year' => $year,
+                'january' => $samples['jan'],
+                'february' => $samples['fev'],
+                'march' => $samples['mar'],
+                'april' => $samples['abr'],
+                'may' => $samples['mai'],
+                'june' => $samples['jun'],
+                'july' => $samples['jul'],
+                'august' => $samples['ago'],
+                'september' => $samples['set'],
+                'october' => $samples['out'],
+                'november' => $samples['nov'],
+                'december' => $samples['dez'],
+            ]);
+        }
+    }
 
-                $this->loader->load($samples, $this->model, $year);
+    private function extractDataFromCptec(int $year, string $kind): array
+    {
+        $files = [];
+
+        foreach ($this->months as $monthNumber => $monthLabel) {
+            try {
+                $files[$monthLabel] = $this->extractor->extract(
+                    $kind,
+                    $year,
+                    $monthNumber,
+                    $monthLabel
+                );
+            } catch (NotFoundHttpException $e) {
+                $files[$monthLabel] = null;
             }
         }
+
+        return $files;
     }
 
-    private function setModelFromKind($kind)
+    private function setModelFromKind(string $kind): string
     {
-        if ($kind == 'tempmin') {
-            $this->model = new MinTemperature;
-        } else if ($kind == 'tempmax') {
-            $this->model = new MaxTemperature;
+        switch ($kind) {
+            case 'tempmin':
+                return MinTemperature::class;
+
+            case 'tempmax':
+                return MaxTemperature::class;
+
+            default:
+                throw new \Exception('Invalid kind ' . $kind, 1);
         }
-    }
-
-    private function entryDoesntExist($year)
-    {
-        return $this->model::select("*")
-            ->where('year', $year)
-            ->doesntExist();
     }
 }
