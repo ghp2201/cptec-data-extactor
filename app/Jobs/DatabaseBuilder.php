@@ -6,6 +6,7 @@ use App\Extractors\Extractor;
 use App\Samplers\Sampler;
 use App\Models\MinTemperature;
 use App\Models\MaxTemperature;
+use Illuminate\Database\Eloquent\Model;
 
 class DatabaseBuilder extends Job
 {
@@ -49,14 +50,14 @@ class DatabaseBuilder extends Job
 
     private function build(string $kind): void
     {
-        $model = $this->setModelFromKind($kind);
+        $model = $this->getModelFromKind($kind);
 
         for ($year = $this->start; $year <= $this->end; $year++) {
             $files = $this->extractDataFromCptec($year, $kind);
 
             $samples = $this->sampler->sample($files, $year);
 
-            $model::create([
+            $dataset = [
                 'year' => $year,
                 'january' => $samples['jan'],
                 'february' => $samples['fev'],
@@ -70,7 +71,15 @@ class DatabaseBuilder extends Job
                 'october' => $samples['out'],
                 'november' => $samples['nov'],
                 'december' => $samples['dez'],
-            ]);
+            ];
+
+            if ($this->entryDoesntExist($year, $model)) {
+                $this->createEntry($model, $dataset);
+
+                continue;
+            }
+
+            $this->updateEntry($model, $dataset, $year);
         }
     }
 
@@ -94,7 +103,7 @@ class DatabaseBuilder extends Job
         return $files;
     }
 
-    private function setModelFromKind(string $kind): string
+    private function getModelFromKind(string $kind): string
     {
         switch ($kind) {
             case 'tempmin':
@@ -106,5 +115,24 @@ class DatabaseBuilder extends Job
             default:
                 throw new \Exception('Invalid kind ' . $kind, 1);
         }
+    }
+
+    private function entryDoesntExist(int $year, string $model): bool
+    {
+        return $model::where('year', $year)
+            ->doesntExist();
+    }
+
+    private function createEntry(string $model, array $dataset): void
+    {
+        $model::create($dataset);
+    }
+
+    private function updateEntry(string $model, array $dataset, int $year): void
+    {
+        $entry = $model::where('year', $year)->first();
+
+        $entry->fill($dataset);
+        $entry->save();
     }
 }
