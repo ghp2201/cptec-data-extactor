@@ -14,7 +14,10 @@
 */
 
 $router->get('/', function () use ($router) {
-    return view('index');
+    return view('index', [
+        'host' => request()->url(),
+        'year' => date('Y'),
+    ]);
 });
 
 
