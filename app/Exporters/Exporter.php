@@ -2,26 +2,14 @@
 
 namespace App\Exporters;
 
-use App\Models\MinTemperature;
-use App\Models\MaxTemperature;
+use App\Helpers\Model as ModelHelper;
 
 class Exporter
 {
-    private $model;
-
-    public function export($kind)
+    public function export($kind): string
     {
-        $this->setModelFromKind($kind);
+        $model = ModelHelper::getModelClassNameFromKind($kind);
 
-        return $this->model::all()->toJson();
-    }
-
-    private function setModelFromKind($kind)
-    {
-        if ($kind == 'tempmin') {
-            $this->model = new MinTemperature;
-        } else if ($kind == 'tempmax') {
-            $this->model = new MaxTemperature;
-        }
+        return $model::orderBy('year', 'asc')->get()->toJson();
     }
 }
