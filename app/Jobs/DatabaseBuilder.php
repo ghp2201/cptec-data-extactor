@@ -53,6 +53,10 @@ class DatabaseBuilder extends Job
         $model = $this->getModelFromKind($kind);
 
         for ($year = $this->start; $year <= $this->end; $year++) {
+            if ((int) $year > (int) date("Y")) {
+                continue;
+            }
+
             $files = $this->extractDataFromCptec($year, $kind);
 
             $samples = $this->sampler->sample($files, $year);
@@ -95,7 +99,7 @@ class DatabaseBuilder extends Job
                     $monthNumber,
                     $monthLabel
                 );
-            } catch (NotFoundHttpException $e) {
+            } catch (\Exception $e) {
                 $files[$monthLabel] = null;
             }
         }

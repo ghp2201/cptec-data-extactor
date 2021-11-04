@@ -35,6 +35,12 @@ class Sampler
         $samples = [];
 
         foreach ($files as $month => $filename) {
+            if (is_null($filename)) {
+                $samples[$month] = null;
+
+                continue;
+            }
+
             $filePath = storage_path("app/{$year}/{$filename}");
 
             $this->image = imagecreatefromgif($filePath);
