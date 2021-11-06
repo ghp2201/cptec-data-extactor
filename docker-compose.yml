@@ -1,50 +1,30 @@
-version: '3.3'
+version: '3.8'
 
 services:
-  php:
-    build: .
+  python:
+    build:
+      context: .
+      dockerfile: Dockerfile_python_flask
+    tty: true
+    command: /bin/sh "gunicorn.sh"
     volumes:
-      - ./:/var/www/
-      - ./:/var/www/html/
-    depends_on:
-      - mysql
+      - ./:/app
+    working_dir: /app
+    expose:
+      - 5000
     networks:
       - backend
+    depends_on:
+      - nginx
 
   nginx:
-    image: nginx:alpine
+    image: nginx
+    tty: true
     volumes:
-      - ./:/var/www/
-      - ./:/var/www/html/
+      - ./:/app
       - ./nginx/conf.d/:/etc/nginx/conf.d/
     ports:
       - "80:80"
-    depends_on:
-      - php
-    networks:
-      - backend
-
-  queue:
-    build: .
-    command: bash -c 'php artisan queue:listen; tail -f /dev/null'
-    volumes:
-      - ./:/var/www/
-    depends_on:
-      - php
-      - nginx
-    networks:
-      - backend
-
-  mysql:
-    image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
-    restart: unless-stopped
-    env_file:
-      - .env
-    volumes:
-      - ./db:/var/lib/mysql
-    ports:
-      - "3306:3306"
     networks:
       - backend
 
