@@ -1,8 +1,8 @@
-from flask import Flask
+from flask import Flask, render_template, request
 
 
 app = Flask(__name__)
 
 @app.get('/')
-def index() -> str:
-    return "It's Alive !"
+def index():
+    return render_template('index.html', url=request.url)
