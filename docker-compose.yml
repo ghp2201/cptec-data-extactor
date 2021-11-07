@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile_python_flask
     tty: true
     command: /bin/sh "gunicorn.sh"
+    restart: always
     volumes:
       - ./:/app
     working_dir: /app
@@ -20,6 +21,7 @@ services:
   nginx:
     image: nginx
     tty: true
+    restart: always
     volumes:
       - ./:/app
       - ./nginx/conf.d/:/etc/nginx/conf.d/
