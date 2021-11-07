@@ -1,6 +1,6 @@
 from json import loads
 
-from src.utils.config import Config
+from src.config import StorageConfig
 from src.utils.exporters.exporter_interface import ExporterInterface
 
 class JsonExporter(ExporterInterface):
@@ -8,7 +8,7 @@ class JsonExporter(ExporterInterface):
         if (kind not in ('tempmax', 'tempmin')):
             return None
 
-        json_path = f'{Config.storage_dataset_dir}/{kind}.json'
+        json_path = f'{StorageConfig.dataset_dir}/{kind}.json'
 
         with open(json_path) as json:
             return json.read()
