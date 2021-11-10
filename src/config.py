@@ -9,3 +9,4 @@ class StorageConfig:
 
 class CptecConfig:
     base_url = 'http://img0.cptec.inpe.br/~rclima/historicos/mensal/brasil/'
+    kinds = ('tempmax', 'tempmin')
