@@ -1,7 +1,7 @@
-from src.utils.enums.enum_interface import EnumInterface
+from enum import Enum, auto
 
 
-class MonthTupleEnum(EnumInterface):
+class MonthTupleEnum(Enum):
     def _generate_next_value_(name, start, count, last_values):
         return (name[:3].lower(), count + 1)
 
@@ -10,15 +10,15 @@ class MonthTupleEnum(EnumInterface):
 
 
 class MonthsEnum(MonthTupleEnum):
-    JANUARY = auto()
-    FEBRUARY = auto()
-    MARCH = auto()
-    APRIL = auto()
-    MAY = auto()
-    JUNE = auto()
-    JULY = auto()
-    AUGUST = auto()
-    SEPTEMBER = auto()
-    OCTOBER = auto()
-    NOVEMBER = auto()
-    DECEMBER = auto()
+    JANEIRO = auto()
+    FEVEREIRO = auto()
+    MARCO = auto()
+    ABRIL = auto()
+    MAIO = auto()
+    JUNHO = auto()
+    JULHO = auto()
+    AGOSTO = auto()
+    SETEMBRO = auto()
+    OUTUBRO = auto()
+    NOVEMBRO = auto()
+    DEZEMBRO = auto()
