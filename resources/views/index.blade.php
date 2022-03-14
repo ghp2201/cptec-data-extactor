@@ -60,7 +60,7 @@
     <footer>
       <div class="w-screen text-center mb-2 sm:absolute sm:bottom-2">
         <a class="fab fa-github text-4xl mx-8" href="https://github.com/gustapinto/cptec-data-extractor"></a>
-        <a class="fas fa-globe-americas text-4xl mx-8" href="https://me.gustapinto.dev"></a>
+        <a class="fas fa-globe-americas text-4xl mx-8" href="https://gustapinto.dev"></a>
       </div>
     </footer>
   </main>
