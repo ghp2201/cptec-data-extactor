@@ -1,0 +1,53 @@
+version: '3.3'
+
+services:
+  php:
+    build: .
+    volumes:
+      - ./:/var/www/
+      - ./:/var/www/html/
+    depends_on:
+      - mysql
+    networks:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./:/var/www/
+      - ./:/var/www/html/
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    ports:
+      - 127.0.0.1:80:80
+    depends_on:
+      - php
+    networks:
+      - backend
+
+  queue:
+    build: .
+    command: bash -c 'php artisan queue:listen; tail -f /dev/null'
+    volumes:
+      - ./:/var/www/
+    depends_on:
+      - php
+      - nginx
+    networks:
+      - backend
+
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./db:/var/lib/mysql
+    ports:
+      - 127.0.0.1:3306:3306
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
