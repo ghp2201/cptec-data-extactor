@@ -40,7 +40,7 @@
             <h4 class="text-xl">
               Exportando todos tipos de temperaturas
             </h4>
-            <a href="{!! $host !!}/api/export/kind=tempmax" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
+            <a href="{!! $host !!}/api/export" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
               {!! $host !!}/api/export
             </a>
           </div>
@@ -49,7 +49,7 @@
             <h4 class="text-xl">
               Exportando apenas dados de um tipo específico
             </h4>
-            <a href="{!! $host !!}/api/export/kind=tempmin" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
+            <a href="{!! $host !!}/api/export/kind=tempmax" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
               {!! $host !!}/api/export/kind={tipo}
             </a>
           </div>
@@ -67,7 +67,7 @@
             <h4 class="text-xl">
               Extraindo todos os tipos de temperaturas
             </h4>
-            <a href="{!! $host !!}/api/export/kind=tempmax" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
+            <a href="{!! $host !!}/api/extract/start={!! $year-1 !!}&end={!! $year !!}" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
               {!! $host !!}/api/extract/start={ano inicial}&end={ano final}
             </a>
           </div>
@@ -76,7 +76,7 @@
             <h4 class="text-xl">
               Extraindo apenas dados de um tipo específico
             </h4>
-            <a href="{!! $host !!}/api/export/kind=tempmax" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
+            <a href="{!! $host !!}/api/extract/start={!! $year-1 !!}&end={!! $year !!}&kind=tempmax" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
               {!! $host !!}/api/extract/start={ano inicial}&end={ano final}&kind={tipo}
             </a>
           </div>
