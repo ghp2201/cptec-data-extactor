@@ -27,10 +27,11 @@ class DatabaseBuilder extends Job
         '12' => 'dez',
     ];
 
-    public function __construct(int $start, int $end)
+    public function __construct(int $start, int $end, array $kinds)
     {
         $this->start = $start;
         $this->end = $end;
+        $this->kinds = $kinds ?? ['tempmin', 'tempmax'];
 
         $this->extractor = new Extractor;
         $this->sampler = new Sampler;
@@ -38,12 +39,7 @@ class DatabaseBuilder extends Job
 
     public function handle(): void
     {
-        $kinds = [
-            'tempmin',
-            'tempmax',
-        ];
-
-        foreach ($kinds as $kind) {
+        foreach ($this->kinds as $kind) {
             $this->build($kind);
         }
     }

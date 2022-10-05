@@ -24,16 +24,25 @@ class Core extends Controller
         $this->exporter = new Exporter;
     }
 
-    public function extract($start, $end)
+    public function extract(string $start, string $end)
     {
-        echo "Extracting Data And Building Database ... \n";
+        echo "Extracting data from " . $start . " to " . $end . " ... \n";
 
-        dispatch(new DatabaseBuilder($start, $end));
+        dispatch(new DatabaseBuilder($start, $end, null));
 
         return;
     }
 
-    public function export($kind)
+    public function extract_with_kind(string $start, string $end, string $kind): void
+    {
+        echo "Extracting data from " . $start . " to " . $end . " with kind " . $kind . " ... \n";
+
+        dispatch(new DatabaseBuilder($start, $end, $kind));
+
+        return;
+    }
+
+    public function export($kind): void|string
     {
         $json = $this->exporter->export($kind);
 
