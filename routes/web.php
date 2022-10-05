@@ -22,15 +22,19 @@ $router->get('/', function () use ($router) {
 
 
 $router->group(['prefix' => 'api/'], function () use ($router) {
+    $router->get('extract/start={start}&end={end}&kind={kind}', [
+        'uses' => 'Core@extractWithKind'
+    ]);
+
     $router->get('extract/start={start}&end={end}', [
         'uses' => 'Core@extract'
     ]);
 
-    $router->get('extract/start={start}&end={end}&kind={kind}', [
-        'uses' => 'Core@extract_with_kind';
+    $router->get('export/kind={kind}', [
+        'uses' => 'Core@exportWithKind'
     ]);
 
-    $router->get('export/kind={kind}', [
+    $router->get('export', [
         'uses' => 'Core@export'
     ]);
 });

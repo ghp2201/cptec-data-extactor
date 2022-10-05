@@ -24,34 +24,65 @@ class Core extends Controller
         $this->exporter = new Exporter;
     }
 
+    /**
+     * Dispatch the jobs for extracting maximum and minimum temperature data from
+     * CPTEC heatmaps
+    */
     public function extract(string $start, string $end)
     {
-        echo "Extracting data from " . $start . " to " . $end . " ... \n";
-
         dispatch(new DatabaseBuilder($start, $end, null));
 
-        return;
+        return response()->json([
+            'message' => "Job dispatched to consume data from " . $start . " to " . $end,
+        ], 200);
     }
 
-    public function extract_with_kind(string $start, string $end, string $kind): void
+    /**
+     * Dispatch the jobs for extracting temperature data from CPTEC heatmaps with
+     * a specific kind
+    */
+    public function extractWithKind(string $start, string $end, string $kind)
     {
-        echo "Extracting data from " . $start . " to " . $end . " with kind " . $kind . " ... \n";
+        dispatch(new DatabaseBuilder($start, $end, [$kind]));
 
-        dispatch(new DatabaseBuilder($start, $end, $kind));
-
-        return;
+        return response()->json([
+            'message' => "Job dispatched to consume data from " . $start . " to " . $end . " with kind " . $kind,
+        ], 200);
     }
 
-    public function export($kind): void|string
+    /**
+     * Exports all available info for all kinds as a JSON array
+    */
+    public function export()
+    {
+        $json = [];
+
+        foreach ($this->kinds as $kind) {
+            $json[$kind] = $this->exporter->export($kind);
+        }
+
+        if (empty($json)) {
+            return response()->json([
+                'message' => "Empty database, please perform an extraction",
+            ], 500);
+        }
+
+        return response()->json($json, 200);
+    }
+
+    /**
+     * Exports all available info for a specific kind as a JSON object
+    */
+    public function exportWithKind(string $kind)
     {
         $json = $this->exporter->export($kind);
 
-        if (empty(json_decode($json, true))) {
-            echo "Empty Database, Please Perform an Extraction \n";
-
-            return;
+        if (empty($json)) {
+            return response()->json([
+                'message' => "Empty database, please perform an extraction",
+            ], 500);
         }
 
-        return $json;
+        return response()->json($json, 200);
     }
 }

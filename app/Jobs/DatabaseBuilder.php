@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DatabaseBuilder extends Job
 {
-    private $kind, $start, $end, $model, $extractor, $sampler, $loader;
+    private $kinds, $start, $end, $model, $extractor, $sampler, $loader;
 
     private $months = [
         '01' => 'jan',
@@ -27,7 +27,7 @@ class DatabaseBuilder extends Job
         '12' => 'dez',
     ];
 
-    public function __construct(int $start, int $end, array $kinds)
+    public function __construct(int $start, int $end, ?array $kinds)
     {
         $this->start = $start;
         $this->end = $end;

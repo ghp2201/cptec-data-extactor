@@ -6,10 +6,10 @@ use App\Helpers\Model as ModelHelper;
 
 class Exporter
 {
-    public function export($kind): string
+    public function export($kind): array
     {
         $model = ModelHelper::getModelClassNameFromKind($kind);
 
-        return $model::orderBy('year', 'asc')->get()->toJson();
+        return $model::orderBy('year', 'asc')->get()->toArray();
     }
 }
