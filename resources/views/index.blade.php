@@ -36,29 +36,56 @@
             O processo de exportação retornará um array de objetos JSON contendo os dados climáticas ordenados por ano
           </div>
 
-          <div class="grid w-full mt-6">
+          <div class="grid w-full mt-8">
             <h4 class="text-xl">
-              Histórico de temperaturas mínimas
+              Exportando todos tipos de temperaturas
             </h4>
-            <a href="{!! $host !!}/api/export/kind=tempmin" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
-              {!! $host !!}/api/export/kind=tempmin
+            <a href="{!! $host !!}/api/export/kind=tempmax" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
+              {!! $host !!}/api/export
             </a>
           </div>
 
           <div class="grid w-full mt-4">
             <h4 class="text-xl">
-              Histórico de temperaturas máximas
+              Exportando apenas dados de um tipo específico
+            </h4>
+            <a href="{!! $host !!}/api/export/kind=tempmin" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
+              {!! $host !!}/api/export/kind={tipo}
+            </a>
+          </div>
+        </div>
+
+        <div class="place-self-center text-center w-full md:w-1/2 mt-10">
+          <h3 class="text-3xl font-semibold">
+            Extraindo dados
+          </h3>
+          <div>
+            O processo de extração de dados disparara um Job em segundo plano para consumir os dados desejados entre o ano inicial e o ano final passados
+          </div>
+
+          <div class="grid w-full mt-8">
+            <h4 class="text-xl">
+              Extraindo todos os tipos de temperaturas
             </h4>
             <a href="{!! $host !!}/api/export/kind=tempmax" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
-              {!! $host !!}/api/export/kind=tempmax
+              {!! $host !!}/api/extract/start={ano inicial}&end={ano final}
+            </a>
+          </div>
+
+          <div class="grid w-full mt-8">
+            <h4 class="text-xl">
+              Extraindo apenas dados de um tipo específico
+            </h4>
+            <a href="{!! $host !!}/api/export/kind=tempmax" class="place-self-center py-2 px-4 bg-gray-200 text-gray-700 w-full sm:w-max rounded-2xl hover:bg-gray-100">
+              {!! $host !!}/api/extract/start={ano inicial}&end={ano final}&kind={tipo}
             </a>
           </div>
         </div>
       </div>
     </section>
 
-    <footer>
-      <div class="w-screen text-center mb-2 sm:absolute sm:bottom-2">
+    <footer class="mt-10">
+      <div class="w-screen text-center mb-2">
         <a class="fab fa-github text-4xl mx-8" href="https://github.com/gustapinto/cptec-data-extractor"></a>
         <a class="fas fa-globe-americas text-4xl mx-8" href="https://gustapinto.dev"></a>
       </div>
