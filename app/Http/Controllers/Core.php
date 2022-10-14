@@ -58,7 +58,7 @@ class Core extends Controller
         $json = [];
 
         foreach ($this->kinds as $kind) {
-            $json[$kind] = $this->exporter->export($kind);
+            array_push($json, ...$this->exporter->export($kind));
         }
 
         if (empty($json)) {

@@ -37,4 +37,13 @@ class MinTemperature extends Model
         'created_at',
         'updated_at',
     ];
+
+    protected $appends = [
+        'kind',
+    ];
+
+    public function getKindAttribute(): string
+    {
+        return 'tempmin';
+    }
 }
